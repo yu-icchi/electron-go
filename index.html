@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello World!</title>
+</head>
+<body>
+<h1>Hello World!</h1>
+<script>
+    const ipcRenderer = require('electron').ipcRenderer;
+    ipcRenderer.on('exec_callback', (event, arg) => {
+      console.log(arg);
+    });
+    function exec() {
+      console.log('exec');
+      ipcRenderer.send('exec', 'ping');
+    }
+</script>
+<button onclick="exec()">exec</button>
+</body>
+</html>
