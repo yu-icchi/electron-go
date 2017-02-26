@@ -6,14 +6,19 @@
 </head>
 <body>
 <h1>Hello World!</h1>
+Int: <input id="int" type="number">
+String: <input id="string" type="text">
+Bool: <input id="bool" type="checkbox">
 <script>
     const ipcRenderer = require('electron').ipcRenderer;
     ipcRenderer.on('exec_callback', (event, arg) => {
       console.log(arg);
     });
     function exec() {
-      console.log('exec');
-      ipcRenderer.send('exec', 'ping');
+      const sel = document.getElementById('string');
+      const iel = document.getElementById('int');
+      const bel = document.getElementById('bool');
+      ipcRenderer.send('exec', iel.value, sel.value, bel.checked);
     }
 </script>
 <button onclick="exec()">exec</button>

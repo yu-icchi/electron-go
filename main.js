@@ -32,13 +32,19 @@ app.on('activate', () => {
   }
 });
 
-ipcMain.on('exec', (event, arg) => {
-  console.log(arg);
-  const proc = child.spawn('./main');
+ipcMain.on('exec', (event, i, s, b) => {
+  const args = ['-int', i || 0, '-string', s || ''];
+  if (b) {
+    args.push('-bool');
+  }
+  const proc = child.spawn('./main', args, {stdio: ['pipe', 'pipe', process.stderr]});
   proc.stdout.on('data', (data) => {
     event.sender.send('exec_callback', data.toString());
   });
-  proc.on('exit', (code) => {
+  proc.on('error', (err) => {
+    console.log(err);
+  });
+  proc.on('close', (code) => {
     event.sender.send('exec_callback', 'code: ' + code);
   });
 });
