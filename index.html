@@ -11,6 +11,12 @@ String: <input id="string" type="text">
 Bool: <input id="bool" type="checkbox">
 <script>
     const ipcRenderer = require('electron').ipcRenderer;
+    ipcRenderer.on('test', (event, data) => {
+      console.log(data);
+    });
+    function test() {
+      ipcRenderer.send('test');
+    }
     ipcRenderer.on('exec_callback', (event, arg) => {
       console.log(arg);
     });
@@ -22,5 +28,6 @@ Bool: <input id="bool" type="checkbox">
     }
 </script>
 <button onclick="exec()">exec</button>
+<button onclick="test()">test</button>
 </body>
 </html>

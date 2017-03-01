@@ -6,6 +6,7 @@ const BrowserWindow = electron.BrowserWindow;
 const ipcMain = electron.ipcMain;
 
 const child = require('child_process');
+const path = require('path');
 
 let win;
 
@@ -32,12 +33,19 @@ app.on('activate', () => {
   }
 });
 
+ipcMain.on('test', (event) => {
+  const path = app.getAppPath();
+  event.sender.send('test', path);
+});
+
 ipcMain.on('exec', (event, i, s, b) => {
   const args = ['-int', i || 0, '-string', s || ''];
   if (b) {
     args.push('-bool');
   }
-  const proc = child.spawn('./main', args, {stdio: ['pipe', 'pipe', process.stderr]});
+  const cmd = path.join(app.getAppPath(), 'main');
+  const proc = child.spawn(cmd, args, {stdio: ['pipe', 'pipe', process.stderr]});
+  proc.stdout.setEncoding('utf8');
   proc.stdout.on('data', (data) => {
     event.sender.send('exec_callback', data.toString());
   });
